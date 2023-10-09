@@ -14,6 +14,16 @@ io.on("connection", socket => {
   socket.on("message",args =>{
     socket.broadcast.emit("recmessage", args);
   })
+  let allUsers: { id: string; username: any; room: any; }[] = [];
+  socket.on("someroom", args =>{
+    socket.join(args.room)
+    let room = args.room;
+    let username = args.name
+    allUsers.push({ id: socket.id, username, room });
+    let chatRoomUsers = allUsers.filter((user) => user.room === room);
+    socket.to(room).emit('chatroom_users', chatRoomUsers);
+    socket.emit('chatroom_users', chatRoomUsers);
+  })
 });
 
 
