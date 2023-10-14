@@ -17,11 +17,17 @@ io.on("connection", socket => {
   console.log(socket.id)
 
   socket.on("online", user =>{
-    onlineUsers.push({"name": user})
-    console.log(onlineUsers)
-    socket.emit("onlineU",onlineUsers)
+    // onlineUsers.push({"name": user})
+    // console.log(onlineUsers)
+    // user = onlineUsers
+    console.log(user)
+    socket.emit("onlineU",user)
   })
+
+  
   socket.on("message",(args, tacos) =>{
+   
+    args.socket_id = socket.id 
     console.log(args)
     tacos ="tacos"
     socket.emit("recmessage", (args),(tacos));
