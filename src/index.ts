@@ -5,7 +5,7 @@ import { Server } from "socket.io";
 const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {    cors: {
-  origin: "http://localhost:5174",
+  origin: "http://localhost:5173",
   methods: ["GET", "POST"]
 }})
 
@@ -17,13 +17,14 @@ io.on("connection", socket => {
   console.log(socket.id)
 
   socket.on("online", user =>{
-    onlineUsers.push({name: user})
+    onlineUsers.push({"name": user})
     console.log(onlineUsers)
     socket.emit("onlineU",onlineUsers)
   })
-  socket.on("message",args =>{
+  socket.on("message",(args, tacos) =>{
     console.log(args)
-    socket.broadcast.emit("recmessage", args);
+    tacos ="tacos"
+    socket.emit("recmessage", (args),(tacos));
   })
 
 });
