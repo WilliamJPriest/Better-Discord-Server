@@ -27,13 +27,13 @@ io.use((socket, next) => {
 });
 
 io.on("connection", (socket) => {
-  const users = [];
+  let users = []; //true to render theiser socket in react
   for (let [id, socket] of io.of("/").sockets) {
     users.push({
       userID: id,
       username: socket.username,
     });
-    console.log("Hello")
+    console.log(users)
   }
   socket.emit("users", users);
 
