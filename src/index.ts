@@ -27,15 +27,22 @@ io.use((socket, next) => {
 });
 
 io.on("connection", (socket) => {
-  let users = []; //true to render theiser socket in react
+  let users: any[] = []; //true to render theiser socket in react
   for (let [id, socket] of io.of("/").sockets) {
     users.push({
       userID: id,
       username: socket.username,
     });
-    console.log(users)
   }
   socket.emit("users", users);
+
+  socket.on("private message", ({ content, to }) => {
+    console.log(to)
+    socket.to(to).emit("private messages", {
+      content
+      // from: socket.id,
+    });
+  });
 
   socket.broadcast.emit("user connected", {
     userID: socket.id,
