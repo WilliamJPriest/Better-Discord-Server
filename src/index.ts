@@ -18,6 +18,7 @@ declare module 'socket.io' {
 }
 
 io.use((socket, next) => {
+  // const socketID = socket.handshake.auth.sessionID
   const username = socket.handshake.auth.username;
   if (!username) {
     return next(new Error("invalid username"));
@@ -27,50 +28,34 @@ io.use((socket, next) => {
 });
 
 io.on("connection", (socket) => {
-  let users: any[] = []; //true to render theiser socket in react
+  let users: any[] = []; 
   for (let [id, socket] of io.of("/").sockets) {
     users.push({
       userID: id,
       username: socket.username,
     });
   }
-  socket.emit("users", users);
+ socket.emit("users", users);
 
-  socket.on("private message", ({ content, to }) => {
+ socket.on("disconnect", () => {
+  users = users.filter((user) => user.userID !== socket.id);
+  io.emit("users", users);
+ })
+
+  socket.on("privateMessage", ({ messages,to}) => {
     console.log(to)
-    socket.to(to).emit("private messages", {
-      content
-      // from: socket.id,
-    });
+    console.log("help")
+    console.log(messages)
+    socket.to(to).emit("privateMessages",(messages)) 
+    // {
+    //   content
+    //   // from: socket.id,
+    // });
   });
 
-  socket.broadcast.emit("user connected", {
-    userID: socket.id,
-    username: socket.username,
-  })
-  // console.log("hi")
-});
-
-//   socket.on("online", (user) =>{
-//     // onlineUsers.push(user)
-//     // console.log(onlineUsers)
-//     // user = onlineUsers
-//     console.log(user)
-//     socket.emit("onlineU",(user))
-//   })
-
-  
-//   socket.on("message",(args, tacos) =>{
-   
-//     args.socket_id = socket.id 
-//     console.log(args)
-//     tacos ="tacos"
-//     socket.broadcast.emit("recmessage", (args),(tacos));
-//     // socket.emit("onlineU",(args)) works on send
-//   })
-
+})
 
 
 httpServer.listen(4000, function() {
   console.log(`Listening on port 4000`);
-});
+})
