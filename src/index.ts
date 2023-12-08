@@ -33,15 +33,18 @@ io.on("connection", (socket) => {
     users.push({
       userID: id,
       username: socket.username,
-    });
+    }); 
+    io.emit("users", users);
   }
 
-
+  console.log(users)
   socket.on("disconnect", () => {
-  users = users.filter((user) => user.userID !== socket.id);
-  io.emit("users", users);
+    users = users.filter((user) => user.userID !== socket.id);
+    console.log(users)
+    io.emit("users", users);
   })
-  socket.emit("users", users);
+
+ 
 
   socket.on("privateMessage", ({ messages,to}) => {
     console.log(to)
