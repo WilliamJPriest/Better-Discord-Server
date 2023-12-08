@@ -47,9 +47,6 @@ io.on("connection", (socket) => {
  
 
   socket.on("privateMessage", ({ messages,to}) => {
-    console.log(to)
-    console.log("help")
-    console.log(messages)
     socket.to(to).emit("privateMessages",(messages)) 
     // {
     //   content
